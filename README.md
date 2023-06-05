@@ -1,15 +1,15 @@
 # MicroReddit
 
-My fork of [RedditUWP app]()
+My fork of [RedditUWP](https://github.com/miguelcopp/redditUWP) project.
 
 ## About 
 
 A simplest Reddit Client to get the top 50 entries from all the time.
 
 ## Status
-
 - RedditSharp project added (it ported to .netstandard1.4)
 - 16299->15063
+- Some little bugs still present :)
 
 ## Technologies
 
@@ -22,8 +22,8 @@ A simplest Reddit Client to get the top 50 entries from all the time.
 In Visual Studio select Debug, x86 and Local Machine before compiling.
 
 ## References
-
-Miguel Coppola (RedditUWP Author)
+- [Miguel Coppola](https://github.com/miguelcopp) RedditUWP Author
+- [https://github.com/miguelcopp/redditUWP](https://github.com/miguelcopp/redditUWP)
 
 ## ..
 As is. No support. DIY
