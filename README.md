@@ -1,6 +1,15 @@
-# Reddit Client
+# MicroReddit
 
-A Reddit Client to get the top 50 entries from all the time.
+My fork of [RedditUWP app]()
+
+## About 
+
+A simplest Reddit Client to get the top 50 entries from all the time.
+
+## Status
+
+- RedditSharp project added (it ported to .netstandard1.4)
+- 16299->15063
 
 ## Technologies
 
@@ -12,6 +21,12 @@ A Reddit Client to get the top 50 entries from all the time.
 
 In Visual Studio select Debug, x86 and Local Machine before compiling.
 
-## Author
+## References
 
-Miguel Coppola
+Miguel Coppola (RedditUWP Author)
+
+## ..
+As is. No support. DIY
+
+## .
+[m][e] 2023
