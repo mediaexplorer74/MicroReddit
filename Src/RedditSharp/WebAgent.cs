@@ -6,13 +6,14 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
+//using System.Threading;
 using System.Web;
 
 namespace RedditSharp
@@ -48,11 +49,9 @@ namespace RedditSharp
     public bool UseProxy { get; set; }
 
 
-    public IWebProxy Proxy { get; set; }
+    public IWebProxy Proxy { get; set; } //public WebProxy Proxy { get; set; }
 
-    //public WebProxy Proxy { get; set; }
-
-        static WebAgent()
+    static WebAgent()
     {
       WebAgent.UserAgent = "";
       WebAgent.RateLimit = WebAgent.RateLimitMode.Pace;
@@ -112,8 +111,9 @@ namespace RedditSharp
             }
           }
         }
-        catch
+        catch (Exception ex)
         {
+           Debug.WriteLine("[ex] " + ex.Message);
         }
       }
       else
@@ -124,7 +124,7 @@ namespace RedditSharp
     /// <summary>
     /// Enforce the api throttle.
     /// </summary>
-    [MethodImpl(/*MethodImplOptions.Synchronized*/MethodImplOptions.AggressiveInlining)]
+    //[MethodImpl(/*MethodImplOptions.Synchronized*/MethodImplOptions.AggressiveInlining)]
     protected virtual void EnforceRateLimit()
     {
       double num = WebAgent.IsOAuth() ? 60.0 : 30.0;
@@ -132,11 +132,15 @@ namespace RedditSharp
       {
         case WebAgent.RateLimitMode.Pace:
           while ((DateTimeOffset.UtcNow - WebAgent._lastRequest).TotalSeconds < 60.0 / num)
-            Thread.Sleep(250);
+          {
+                //RnD
+                //Thread.Sleep(250);
+          }
           WebAgent._lastRequest = DateTimeOffset.UtcNow;
           break;
         case WebAgent.RateLimitMode.SmallBurst:
-          if (WebAgent._requestsThisBurst == 0 || (DateTimeOffset.UtcNow - WebAgent._burstStart).TotalSeconds >= 10.0)
+          if (WebAgent._requestsThisBurst == 0 
+           || (DateTimeOffset.UtcNow - WebAgent._burstStart).TotalSeconds >= 10.0)
           {
             WebAgent._burstStart = DateTimeOffset.UtcNow;
             WebAgent._requestsThisBurst = 0;
@@ -144,7 +148,10 @@ namespace RedditSharp
           if ((double) WebAgent._requestsThisBurst >= num / 6.0)
           {
             while ((DateTimeOffset.UtcNow - WebAgent._burstStart).TotalSeconds < 10.0)
-              Thread.Sleep(250);
+            {
+                //RnD
+                //Thread.Sleep(250);
+            }
             WebAgent._burstStart = DateTimeOffset.UtcNow;
             WebAgent._requestsThisBurst = 0;
           }
@@ -152,7 +159,8 @@ namespace RedditSharp
           ++WebAgent._requestsThisBurst;
           break;
         case WebAgent.RateLimitMode.Burst:
-          if (WebAgent._requestsThisBurst == 0 || (DateTimeOffset.UtcNow - WebAgent._burstStart).TotalSeconds >= 60.0)
+          if (WebAgent._requestsThisBurst == 0 
+            || (DateTimeOffset.UtcNow - WebAgent._burstStart).TotalSeconds >= 60.0)
           {
             WebAgent._burstStart = DateTimeOffset.UtcNow;
             WebAgent._requestsThisBurst = 0;
@@ -160,7 +168,10 @@ namespace RedditSharp
           if ((double) WebAgent._requestsThisBurst >= num)
           {
             while ((DateTimeOffset.UtcNow - WebAgent._burstStart).TotalSeconds < 60.0)
-              Thread.Sleep(250);
+            {
+                //RnD
+                //Thread.Sleep(250);
+            }
             WebAgent._burstStart = DateTimeOffset.UtcNow;
             WebAgent._requestsThisBurst = 0;
           }
@@ -172,7 +183,8 @@ namespace RedditSharp
 
     public virtual HttpWebRequest CreateRequest(string url, string method)
     {
-      this.EnforceRateLimit();
+      //this.
+      EnforceRateLimit();
       HttpWebRequest request = !(!(Type.GetType("Mono.Runtime") != (Type) null) ? !Uri.IsWellFormedUriString(url, UriKind.Absolute) : !url.StartsWith("http://") && !url.StartsWith("https://")) ? (HttpWebRequest) WebRequest.Create(url) : (HttpWebRequest) WebRequest.Create(string.Format("{0}://{1}{2}", (object) WebAgent.Protocol, (object) WebAgent.RootDomain, (object) url));
       request.CookieContainer = this.Cookies;
       if (Type.GetType("Mono.Runtime") != (Type) null)
@@ -245,7 +257,7 @@ namespace RedditSharp
     public virtual string GetResponseString(Stream stream)
     {
       string end = new StreamReader(stream).ReadToEnd();
-      stream.Flush();//.Close();
+      stream.Flush();
       return end;
     }
 

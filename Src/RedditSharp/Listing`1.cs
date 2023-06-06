@@ -1,8 +1,6 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: RedditSharp.Listing`1
+﻿// Type: RedditSharp.Listing`1
 // Assembly: RedditSharp, Version=1.1.14.0, Culture=neutral, PublicKeyToken=null
 // MVID: 5AA3A237-2C47-4831-9B65-C0500259A1AD
-// Assembly location: C:\Users\Admin\Desktop\re\RedditSharp.dll
 
 using Newtonsoft.Json.Linq;
 using RedditSharp.Extensions;
@@ -10,6 +8,7 @@ using RedditSharp.Things;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 
 namespace RedditSharp
@@ -31,9 +30,16 @@ namespace RedditSharp
       this.Url = url;
     }
 
-    public IEnumerator<T> GetEnumerator(int limitPerRequest, int maximumLimit = -1, bool stream = false) => (IEnumerator<T>) new Listing<T>.ListingEnumerator<T>(this, limitPerRequest, maximumLimit, stream);
+    public IEnumerator<T> GetEnumerator(int limitPerRequest,
+        int maximumLimit = -1, bool stream = false)
+    {
+        return (IEnumerator<T>)new Listing<T>.ListingEnumerator<T>(this, limitPerRequest, maximumLimit, stream);
+    }
 
-    public IEnumerator<T> GetEnumerator() => this.GetEnumerator(25);
+    public IEnumerator<T> GetEnumerator()
+    {
+        return this.GetEnumerator(25);
+    }
 
     IEnumerator IEnumerable.GetEnumerator() => (IEnumerator) this.GetEnumerator();
 
@@ -85,9 +91,15 @@ namespace RedditSharp
         this.MaximumLimit = maximumLimit;
       }
 
-      public T Current => (T) this.CurrentPage[this.CurrentPageIndex];
+            public T Current
+            {
+                get
+                {
+                    return (T)this.CurrentPage[this.CurrentPageIndex];
+                }
+            }
 
-      private void FetchNextPage()
+            private void FetchNextPage()
       {
         if (this.stream)
           this.PageForward();
@@ -115,10 +127,24 @@ namespace RedditSharp
         }
         if (this.Count > 0)
           url = url + (url.Contains("?") ? (object) "&" : (object) "?") + "count=" + (object) this.Count;
-        JToken json = JToken.Parse(
-            this.Listing.WebAgent.GetResponseString(this.Listing.WebAgent.CreateGet(url).GetResponseAsync().Result.GetResponseStream()));
-        if (((IEnumerable<JToken>) json[(object) "kind"]).ValueOrDefault<string>() != nameof (Listing<T>))
-          throw new FormatException("Reddit responded with an object that is not a listing.");
+
+        JToken json = default;
+        try
+        {
+            json = JToken.Parse(
+                this.Listing.WebAgent.GetResponseString(this.Listing.WebAgent.CreateGet(url).GetResponseAsync().Result.GetResponseStream()));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[ex] JToken.Parse error: " + ex.Message);
+            return;
+        }
+
+        if (((IEnumerable<JToken>)json[(object)"kind"]).ValueOrDefault<string>() 
+          != nameof(Listing<T>))
+        {
+            throw new FormatException("Reddit responded with an object that is not a listing.");
+        }
         this.Parse(json);
       }
 
@@ -177,13 +203,17 @@ namespace RedditSharp
             }
             if (!string.IsNullOrEmpty(str2) && !this.done.Contains(str2))
             {
-              thingList.Add(Thing.Parse<T>(this.Listing.Reddit, jarray[index], this.Listing.WebAgent));
+              thingList.Add(Thing.Parse<T>(this.Listing.Reddit, jarray[index], 
+                  this.Listing.WebAgent));
               this.done.Add(str2);
             }
           }
         }
         if (this.stream)
-          thingList.Reverse();
+        {
+            thingList.Reverse();
+        }
+
         this.CurrentPage = thingList.ToArray();
         this.Count += this.CurrentPage.Length;
         this.After = Newtonsoft.Json.Linq.Extensions.Value<string>((IEnumerable<JToken>) json[(object) "data"][(object) "after"]);
@@ -194,11 +224,20 @@ namespace RedditSharp
       {
       }
 
-      object IEnumerator.Current => (object) this.Current;
+        object IEnumerator.Current
+        {
+            get
+            {
+                return (object)this.Current;
+            }
+        }
 
-      public bool MoveNext() => this.stream ? this.MoveNextForward() : this.MoveNextBack();
+        public bool MoveNext()
+        {
+            return this.stream ? this.MoveNextForward() : this.MoveNextBack();
+        }
 
-      private bool MoveNextBack()
+        private bool MoveNextBack()
       {
         ++this.CurrentPageIndex;
         if (this.CurrentPageIndex == this.CurrentPage.Length)
