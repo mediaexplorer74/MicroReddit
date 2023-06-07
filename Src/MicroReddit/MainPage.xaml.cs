@@ -58,7 +58,7 @@ namespace MicroReddit
             }
 
             UpdateForVisualState(AdaptiveStates.CurrentState);
-            DisableContentTransitions();
+            //DisableContentTransitions();
         }
 
         private void AdaptiveStates_CurrentStateChanged(object sender, VisualStateChangedEventArgs e)

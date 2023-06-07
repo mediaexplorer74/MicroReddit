@@ -17,10 +17,10 @@ namespace MicroReddit
     {
         // App type: script (see https://www.reddit.com/prefs/apps/)
 
-        private static readonly string REDDIT_USER = "xxxxxxxxxxxxxxxx";//Environment.GetEnvironmentVariable("REDDIT_USER");
-        private static readonly string REDDIT_PASSWORD = "xxxxxxxxxxx";//Environment.GetEnvironmentVariable("REDDIT_PASSWORD");
-        private static readonly string REDDIT_CLIENT_ID = "xxxxxxxxxxxxxxxxxx";//Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
-        private static readonly string REDDIT_CLIENT_SECRET = "xxxxxxxxxxxxxxxxxxxxxxxxxx";//Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
+        private static readonly string REDDIT_USER = xxx";//Environment.GetEnvironmentVariable("REDDIT_USER");
+        private static readonly string REDDIT_PASSWORD = "xxx";//Environment.GetEnvironmentVariable("REDDIT_PASSWORD");
+        private static readonly string REDDIT_CLIENT_ID = "xxxxxxxx";//Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
+        private static readonly string REDDIT_CLIENT_SECRET = "xxxxxxxxxx";//Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
 
         public App()
         {

@@ -98,7 +98,7 @@ namespace MicroReddit
 
         private bool ShouldGoToWideState()
         {
-            return Window.Current.Bounds.Width >= 720;
+            return Window.Current.Bounds.Width >= 200;
         }
 
         private void PageRoot_Loaded(object sender, RoutedEventArgs e)
